@@ -1,0 +1,22 @@
+camera:
+  - platform: generic
+    name: Pan Tilt Camera
+    stream_source: "rtsp://<pi-ip>:8554/unicast"
+
+mqtt:
+  button:
+    - name: Pan Left
+      command_topic: "pantilt/pan"
+      payload_press: "left"
+
+    - name: Pan Right
+      command_topic: "pantilt/pan"
+      payload_press: "right"
+
+    - name: Tilt Up
+      command_topic: "pantilt/tilt"
+      payload_press: "up"
+
+    - name: Tilt Down
+      command_topic: "pantilt/tilt"
+      payload_press: "down"

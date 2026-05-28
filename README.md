@@ -199,12 +199,12 @@ cards:
 Connect servos to the Raspberry Pi GPIO pins:
 
 - **Pan Servo:**
-  - Signal → GPIO 17 (Pin 11)
+  - Signal → GPIO 12 (Pin 32)
   - Power → 5V (Pin 2 or 4)
   - Ground → GND (Pin 6)
 
 - **Tilt Servo:**
-  - Signal → GPIO 18 (Pin 12)
+  - Signal → GPIO 13 (Pin 33)
   - Power → 5V (Pin 2 or 4)
   - Ground → GND (Pin 6)
 

@@ -8,11 +8,31 @@ echo "=== Enabling camera and SSH ==="
 sudo raspi-config nonint do_camera 0
 sudo raspi-config nonint do_ssh 0
 
-echo "=== Installing dependencies ==="
-sudo apt install -y pigpio python3-pigpio python3-pip v4l2rtspserver mosquitto-clients
+echo "=== Installing base dependencies ==="
+sudo apt install -y python3-pip mosquitto-clients cmake git
+
+echo "=== Installing pigpio from source ==="
+if [ ! -d "/tmp/pigpio" ]; then
+    cd /tmp
+    git clone https://github.com/joan2937/pigpio.git
+    cd pigpio
+    make
+    sudo make install
+    cd ~
+fi
 
 echo "=== Enabling pigpio ==="
 sudo systemctl enable --now pigpiod
+
+echo "=== Installing v4l2rtspserver ==="
+if [ ! -f "/usr/local/bin/v4l2rtspserver" ]; then
+    cd /tmp
+    wget https://github.com/mpromonet/v4l2rtspserver/releases/download/v0.2.7/v4l2rtspserver-0.2.7-Linux-armv7l.tar.gz
+    tar xzf v4l2rtspserver-0.2.7-Linux-armv7l.tar.gz
+    sudo cp v4l2rtspserver-0.2.7-Linux-armv7l/v4l2rtspserver /usr/local/bin/
+    sudo chmod +x /usr/local/bin/v4l2rtspserver
+    cd ~
+fi
 
 echo "=== Creating target directories ==="
 sudo mkdir -p /opt/pantilt

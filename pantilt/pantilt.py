@@ -1,9 +1,9 @@
 import pigpio
 import paho.mqtt.client as mqtt
 
-# Physical Pin 16 = GPIO 23 (Pan), Physical Pin 18 = GPIO 24 (Tilt)
-PAN_PIN = 23
-TILT_PIN = 24
+# XC9050 HAT: IO16 = GPIO 16 (Pan), IO18 = GPIO 18 (Tilt)
+PAN_PIN = 16
+TILT_PIN = 18
 
 pi = pigpio.pi('localhost', 9000)
 pi.set_mode(PAN_PIN, pigpio.OUTPUT)

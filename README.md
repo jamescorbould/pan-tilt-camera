@@ -197,8 +197,8 @@ cards:
 ### For Duinotech XC9050 Pan-Tilt HAT
 
 Simply plug the servos into the labeled connectors on the HAT:
-- **Pan Servo** → "Pan" connector on HAT (uses GPIO 23 / Physical Pin 16)
-- **Tilt Servo** → "Tilt" connector on HAT (uses GPIO 24 / Physical Pin 18)
+- **Pan Servo** → "Pan" connector on HAT (uses GPIO 16 / IO16)
+- **Tilt Servo** → "Tilt" connector on HAT (uses GPIO 18 / IO18)
 
 **Reference:** [Official Jaycar XC9050 Project](https://github.com/Jaycar-Electronics/Pan-Tilt-Camera)
 
@@ -207,12 +207,12 @@ Simply plug the servos into the labeled connectors on the HAT:
 Connect servos directly to Raspberry Pi GPIO pins:
 
 - **Pan Servo:**
-  - Signal → GPIO 23 (Physical Pin 16)
+  - Signal → GPIO 16 (Physical Pin 36)
   - Power → 5V (Pin 2 or 4)
   - Ground → GND (Pin 6)
 
 - **Tilt Servo:**
-  - Signal → GPIO 24 (Physical Pin 18)
+  - Signal → GPIO 18 (Physical Pin 12)
   - Power → 5V (Pin 2 or 4)
   - Ground → GND (Pin 6)
 

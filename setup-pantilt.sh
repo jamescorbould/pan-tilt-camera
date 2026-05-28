@@ -82,7 +82,7 @@ else
 fi
 
 echo "=== Installing Python dependencies ==="
-sudo pip3 install -r /opt/pantilt/requirements.txt
+sudo pip3 install -r /opt/pantilt/requirements.txt --break-system-packages
 
 # pantilt.service
 if [ -f "./systemd/pantilt.service" ]; then

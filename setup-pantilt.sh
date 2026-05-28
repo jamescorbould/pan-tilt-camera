@@ -30,26 +30,6 @@ sudo ldconfig
 echo "=== Installing pigpio Python library ==="
 sudo pip3 install pigpio --break-system-packages
 
-echo "=== Creating pigpiod systemd service ==="
-sudo tee /etc/systemd/system/pigpiod.service > /dev/null <<EOF
-[Unit]
-Description=Pigpio daemon
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/pigpiod -l
-ExecStop=/bin/systemctl kill pigpiod
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-echo "=== Enabling pigpio ==="
-sudo systemctl daemon-reload
-sudo systemctl enable --now pigpiod
-
 echo "=== Installing mediamtx ==="
 if [ ! -f "/usr/local/bin/mediamtx" ]; then
     # Detect architecture
@@ -108,6 +88,15 @@ fi
 echo "=== Installing Python dependencies ==="
 sudo pip3 install -r /opt/pantilt/requirements.txt --break-system-packages
 
+# pigpiod.service
+if [ -f "./systemd/pigpiod.service" ]; then
+    echo "Installing pigpiod.service → /etc/systemd/system/"
+    sudo cp ./systemd/pigpiod.service /etc/systemd/system/pigpiod.service
+else
+    echo "ERROR: systemd/pigpiod.service not found"
+    exit 1
+fi
+
 # pantilt.service
 if [ -f "./systemd/pantilt.service" ]; then
     echo "Installing pantilt.service → /etc/systemd/system/"
@@ -133,6 +122,9 @@ fi
 echo "=== Reloading systemd ==="
 sudo systemctl daemon-reload
 
+echo "=== Enabling pigpiod.service ==="
+sudo systemctl enable --now pigpiod
+
 echo "=== Enabling pantilt.service ==="
 sudo systemctl enable --now pantilt
 
@@ -144,6 +136,6 @@ sudo systemctl enable --now rtsp
 #############################################
 
 echo "=== Setup complete ==="
-echo "RTSP stream available at: rtsp://<pi-ip>:8554/unicast"
+echo "RTSP stream available at: rtsp://<pi-ip>:8554/cam"
 echo "MQTT topics: pantilt/pan and pantilt/tilt"
 echo "All services installed and running"

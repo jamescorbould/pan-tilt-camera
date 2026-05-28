@@ -1,9 +1,9 @@
 [Unit]
-Description=RTSP Camera Stream
+Description=MediaMTX RTSP Camera Stream
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/v4l2rtspserver -W 1280 -H 720 -F 30 -P 8554 /dev/video0
+ExecStart=/usr/local/bin/mediamtx /etc/mediamtx/mediamtx.yml
 Restart=always
 User=root
 

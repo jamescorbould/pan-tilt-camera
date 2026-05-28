@@ -1,7 +1,7 @@
 camera:
   - platform: generic
     name: Pan Tilt Camera
-    stream_source: "rtsp://<pi-ip>:8554/unicast"
+    stream_source: "rtsp://<pi-ip>:8554/cam"
 
 mqtt:
   button:

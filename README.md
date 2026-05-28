@@ -45,19 +45,19 @@ The script will:
 
 ### After Installation
 
-- **RTSP stream:** `rtsp://<pi-ip>:8554/unicast`
+- **RTSP stream:** `rtsp://<pi-ip>:8554/cam`
 - **MQTT topics:** `pantilt/pan` and `pantilt/tilt`
 
 ---
 
 ## 🎥 Camera Streaming
 
-The Pi exposes a standard RTSP stream using `v4l2rtspserver`.
+The Pi exposes a standard RTSP stream using `mediamtx`.
 
 **Default stream URL:**
 
 ```
-rtsp://<pi-ip>:8554/unicast
+rtsp://<pi-ip>:8554/cam
 ```
 
 This works with:
@@ -91,7 +91,7 @@ Each command moves the servo in small increments for smooth control.
 camera:
   - platform: generic
     name: Pan Tilt Camera
-    stream_source: "rtsp://<pi-ip>:8554/unicast"
+    stream_source: "rtsp://<pi-ip>:8554/cam"
 ```
 
 ### Add MQTT Buttons

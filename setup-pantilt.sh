@@ -50,15 +50,27 @@ echo "=== Enabling pigpio ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now pigpiod
 
-echo "=== Installing v4l2rtspserver ==="
-if [ ! -f "/usr/local/bin/v4l2rtspserver" ]; then
+echo "=== Installing mediamtx ==="
+if [ ! -f "/usr/local/bin/mediamtx" ]; then
     cd /tmp
-    git clone https://github.com/mpromonet/v4l2rtspserver.git
-    cd v4l2rtspserver
-    cmake . && make
-    sudo make install
+    wget https://github.com/bluenviron/mediamtx/releases/download/v1.8.3/mediamtx_v1.8.3_linux_armv7l.tar.gz
+    tar -xzf mediamtx_v1.8.3_linux_armv7l.tar.gz
+    sudo mv mediamtx /usr/local/bin/
+    sudo chmod +x /usr/local/bin/mediamtx
     cd "$SCRIPT_DIR"
 fi
+
+echo "=== Creating mediamtx configuration ==="
+sudo mkdir -p /etc/mediamtx
+sudo tee /etc/mediamtx/mediamtx.yml > /dev/null <<EOF
+paths:
+  cam:
+    source: rpiCamera
+    rpiCameraCamID: 0
+    rpiCameraWidth: 1280
+    rpiCameraHeight: 720
+    rpiCameraFPS: 30
+EOF
 
 echo "=== Creating target directories ==="
 sudo mkdir -p /opt/pantilt

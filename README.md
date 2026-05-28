@@ -1,13 +1,16 @@
 # Pan-Tilt Camera System
 
-A lightweight, modern pan-tilt camera system built on Raspberry Pi.
+A lightweight, modern pan-tilt camera system built on Raspberry Pi with MQTT control and RTSP streaming.
+
+**Hardware:** This project is designed for the [Duinotech XC9050 Pan-Tilt HAT](https://github.com/Jaycar-Electronics/Pan-Tilt-Camera). The HAT provides convenient servo connectors and is available from Jaycar Electronics.
 
 ## Features
 
 - 🎥 RTSP video streaming via MediaMTX
 - 🎮 MQTT-based pan/tilt control
-- ⚙️ Smooth servo motion using hardware PWM
+- ⚙️ Smooth servo motion using hardware PWM (pigpio)
 - 🏠 Native Home Assistant integration
+- 🔧 Compatible with XC9050 Pan-Tilt HAT or direct GPIO wiring
 
 This project is designed to be simple, reliable, and easy to extend.
 
@@ -15,11 +18,18 @@ This project is designed to be simple, reliable, and easy to extend.
 
 ## Prerequisites
 
+**Hardware:**
 - Raspberry Pi (tested on Pi 3/4/5)
 - Raspberry Pi Camera Module (CSI ribbon cable camera)
-- 2x Servo motors for pan/tilt
-- MQTT broker (Mosquitto or built into Home Assistant)
+- **Duinotech XC9050 Pan-Tilt HAT** (recommended) or compatible GPIO breakout
+  - Includes 2x mounting points for servo motors
+  - Available from [Jaycar Electronics](https://www.jaycar.com.au/)
+  - See [official Jaycar project guide](https://github.com/Jaycar-Electronics/Pan-Tilt-Camera)
+- 2x Micro servo motors (e.g., SG90 or similar)
+
+**Software:**
 - Raspberry Pi OS (64-bit or 32-bit)
+- MQTT broker (Mosquitto on Pi, or Home Assistant's built-in broker)
 
 ---
 
@@ -44,12 +54,13 @@ The script will:
 
 - Update the system
 - Enable camera and SSH
-- Install pigpio + Python dependencies
-- Build and install pigpio daemon
+- Install pigpio from source + Python dependencies
+- Install pigpio daemon (configured for port 9000)
 - Install MediaMTX RTSP server (architecture auto-detected)
 - Configure camera settings
 - Copy project files to `/opt/pantilt/`
-- Install and enable systemd services
+- Install and enable systemd services (pigpiod, pantilt, rtsp)
+- Configure MQTT connection to localhost
 
 ### 3. Configure the camera (if needed)
 
@@ -273,12 +284,22 @@ Test pigpio daemon:
 sudo systemctl status pigpiod
 ```
 
-### Test MQTT manually
+**Note:** pigpiod runs on port 9000 (to avoid conflict with MediaMTX on port 8888). The pantilt.py script is configured to connect to this port automatically.
+
+Test servos manually:
 
 ```bash
 mosquitto_pub -t pantilt/pan -m left
+mosquitto_pub -t pantilt/pan -m right
 mosquitto_pub -t pantilt/tilt -m up
+mosquitto_pub -t pantilt/tilt -m down
 ```
+
+If servos don't move:
+1. Verify servos are plugged into IO16 (pan) and IO18 (tilt) on the XC9050 HAT
+2. Check servo power connections (red to 5V, brown/black to GND)
+3. Test MQTT broker is running: `sudo systemctl status mosquitto`
+4. Check pantilt service logs: `sudo journalctl -u pantilt -n 20`
 
 ### Servos jitter or don't move smoothly
 
@@ -323,3 +344,18 @@ dos2unix setup-pantilt.sh
 chmod +x setup-pantilt.sh
 sudo ./setup-pantilt.sh
 ```
+
+---
+
+## References
+
+- **Hardware Guide:** [Jaycar XC9050 Pan-Tilt Camera Project](https://github.com/Jaycar-Electronics/Pan-Tilt-Camera) - Official assembly and wiring guide for the XC9050 HAT
+- **MediaMTX:** [RTSP Server](https://github.com/bluenviron/mediamtx) - Lightweight RTSP streaming with libcamera support
+- **pigpio:** [GPIO Library](https://abyz.me.uk/rpi/pigpio/) - Hardware PWM servo control
+- **Home Assistant:** [Camera Integration](https://www.home-assistant.io/integrations/camera/) - RTSP camera setup guide
+
+---
+
+## License
+
+MIT License - Feel free to use and modify for your own projects!

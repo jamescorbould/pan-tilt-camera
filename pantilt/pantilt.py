@@ -5,7 +5,7 @@ import paho.mqtt.client as mqtt
 PAN_PIN = 23
 TILT_PIN = 24
 
-pi = pigpio.pi()
+pi = pigpio.pi('localhost', 8889)
 pi.set_mode(PAN_PIN, pigpio.OUTPUT)
 pi.set_mode(TILT_PIN, pigpio.OUTPUT)
 

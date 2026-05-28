@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Save the current directory (where the script was run from)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 echo "=== Updating system ==="
 sudo apt update && sudo apt upgrade -y
 
@@ -18,7 +21,7 @@ if [ ! -d "/tmp/pigpio" ]; then
     cd pigpio
     make
     sudo make install
-    cd ~
+    cd "$SCRIPT_DIR"
 fi
 
 echo "=== Configuring library path ==="
@@ -54,7 +57,7 @@ if [ ! -f "/usr/local/bin/v4l2rtspserver" ]; then
     cd v4l2rtspserver
     cmake . && make
     sudo make install
-    cd ~
+    cd "$SCRIPT_DIR"
 fi
 
 echo "=== Creating target directories ==="

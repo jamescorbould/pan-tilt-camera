@@ -9,7 +9,7 @@ sudo raspi-config nonint do_camera 0
 sudo raspi-config nonint do_ssh 0
 
 echo "=== Installing base dependencies ==="
-sudo apt install -y python3-pip mosquitto-clients cmake git
+sudo apt install -y python3-pip python3-dev python3-setuptools mosquitto-clients cmake git build-essential
 
 echo "=== Installing pigpio from source ==="
 if [ ! -d "/tmp/pigpio" ]; then
@@ -20,6 +20,9 @@ if [ ! -d "/tmp/pigpio" ]; then
     sudo make install
     cd ~
 fi
+
+echo "=== Installing pigpio Python library ==="
+sudo pip3 install pigpio --break-system-packages
 
 echo "=== Enabling pigpio ==="
 sudo systemctl enable --now pigpiod

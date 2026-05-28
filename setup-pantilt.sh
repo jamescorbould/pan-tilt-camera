@@ -50,10 +50,10 @@ sudo systemctl enable --now pigpiod
 echo "=== Installing v4l2rtspserver ==="
 if [ ! -f "/usr/local/bin/v4l2rtspserver" ]; then
     cd /tmp
-    wget https://github.com/mpromonet/v4l2rtspserver/releases/download/v0.2.7/v4l2rtspserver-0.2.7-Linux-armv7l.tar.gz
-    tar xzf v4l2rtspserver-0.2.7-Linux-armv7l.tar.gz
-    sudo cp v4l2rtspserver-0.2.7-Linux-armv7l/v4l2rtspserver /usr/local/bin/
-    sudo chmod +x /usr/local/bin/v4l2rtspserver
+    git clone https://github.com/mpromonet/v4l2rtspserver.git
+    cd v4l2rtspserver
+    cmake . && make
+    sudo make install
     cd ~
 fi
 

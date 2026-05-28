@@ -33,7 +33,7 @@ def on_message(client, userdata, msg):
         set_servo(TILT_PIN, tilt_pos)
 
 client = mqtt.Client()
-client.connect("homeassistant.local")
+client.connect("localhost")
 client.subscribe("pantilt/pan")
 client.subscribe("pantilt/tilt")
 client.on_message = on_message

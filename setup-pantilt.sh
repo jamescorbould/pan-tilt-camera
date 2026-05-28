@@ -24,7 +24,23 @@ fi
 echo "=== Installing pigpio Python library ==="
 sudo pip3 install pigpio --break-system-packages
 
+echo "=== Creating pigpiod systemd service ==="
+sudo tee /etc/systemd/system/pigpiod.service > /dev/null <<EOF
+[Unit]
+Description=Pigpio daemon
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/pigpiod
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 echo "=== Enabling pigpio ==="
+sudo systemctl daemon-reload
 sudo systemctl enable --now pigpiod
 
 echo "=== Installing v4l2rtspserver ==="

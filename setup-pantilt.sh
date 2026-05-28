@@ -52,9 +52,21 @@ sudo systemctl enable --now pigpiod
 
 echo "=== Installing mediamtx ==="
 if [ ! -f "/usr/local/bin/mediamtx" ]; then
+    # Detect architecture
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        MEDIAMTX_ARCH="arm64v8"
+    elif [ "$ARCH" = "armv7l" ]; then
+        MEDIAMTX_ARCH="armv7"
+    else
+        echo "ERROR: Unsupported architecture: $ARCH"
+        exit 1
+    fi
+    
+    MEDIAMTX_VERSION="v1.9.1"
     cd /tmp
-    wget https://github.com/bluenviron/mediamtx/releases/download/v1.8.3/mediamtx_v1.8.3_linux_armv7l.tar.gz
-    tar -xzf mediamtx_v1.8.3_linux_armv7l.tar.gz
+    wget https://github.com/bluenviron/mediamtx/releases/download/${MEDIAMTX_VERSION}/mediamtx_${MEDIAMTX_VERSION}_linux_${MEDIAMTX_ARCH}.tar.gz
+    tar -xzf mediamtx_${MEDIAMTX_VERSION}_linux_${MEDIAMTX_ARCH}.tar.gz
     sudo mv mediamtx /usr/local/bin/
     sudo chmod +x /usr/local/bin/mediamtx
     cd "$SCRIPT_DIR"

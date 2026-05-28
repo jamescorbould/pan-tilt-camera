@@ -21,6 +21,9 @@ if [ ! -d "/tmp/pigpio" ]; then
     cd ~
 fi
 
+echo "=== Configuring library path ==="
+sudo ldconfig
+
 echo "=== Installing pigpio Python library ==="
 sudo pip3 install pigpio --break-system-packages
 
@@ -31,8 +34,9 @@ Description=Pigpio daemon
 After=network.target
 
 [Service]
-Type=forking
-ExecStart=/usr/local/bin/pigpiod
+Type=simple
+ExecStart=/usr/local/bin/pigpiod -l
+ExecStop=/bin/systemctl kill pigpiod
 Restart=on-failure
 
 [Install]

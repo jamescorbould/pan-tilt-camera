@@ -1,8 +1,9 @@
 import pigpio
 import paho.mqtt.client as mqtt
 
-PAN_PIN = 12
-TILT_PIN = 13
+# Physical Pin 16 = GPIO 23 (Pan), Physical Pin 18 = GPIO 24 (Tilt)
+PAN_PIN = 23
+TILT_PIN = 24
 
 pi = pigpio.pi()
 pi.set_mode(PAN_PIN, pigpio.OUTPUT)

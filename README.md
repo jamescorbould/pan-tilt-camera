@@ -200,7 +200,76 @@ cards:
     name: Down
     entity: button.tilt_down
 ```
+### Setting Up via Home Assistant UI
 
+**Step 1: Add MQTT Integration**
+
+1. Go to **Settings** → **Devices & Services**
+2. Click **+ Add Integration** (bottom right)
+3. Search for **MQTT**
+4. Enter connection details:
+   - **Broker:** Your Raspberry Pi IP address (e.g., `192.168.1.100`)
+   - **Port:** `1883`
+   - Leave username/password blank if you configured `allow_anonymous true` in Mosquitto
+5. Click **Submit**
+
+**Step 2: Add the Camera**
+
+1. Go to **Settings** → **Devices & Services**
+2. Click **+ Add Integration**
+3. Search for **Generic Camera**
+4. Fill in:
+   - **Name:** `Pan Tilt Camera`
+   - **Stream Source URL:** `rtsp://192.168.1.100:8554/cam` (replace with your Pi IP)
+5. Click **Submit**
+
+The camera entity will be created as `camera.pan_tilt_camera`
+
+**Step 3: Create Dashboard with Camera & Controls**
+
+1. Go to your **Home** page (Overview)
+2. Click the **pencil icon** in the top right (or three dots → **Edit Dashboard**)
+   - If you don't see this option, click the three dots → **Take Control** first
+3. Click **+ ADD CARD**
+
+**Add Camera Card:**
+1. Search for **Camera**
+2. Select **Camera** card type
+3. Choose **Pan Tilt Camera** from the entity list
+4. Click **Save**
+
+**Add Control Buttons:**
+
+For each direction button, repeat these steps:
+
+1. Click **+ ADD CARD**
+2. Search for **Button**
+3. Click **Button** card
+4. Configure:
+   - **Name:** `Pan Left ⬅️` (or `Pan Right ➡️`, `Tilt Up ⬆️`, `Tilt Down ⬇️`)
+   - **Tap Action:** `Call Service`
+   - **Service:** `mqtt.publish`
+   - **Service Data:** Click **Edit in YAML** and enter:
+     ```yaml
+     topic: pantilt/pan
+     payload: left
+     ```
+
+Repeat for all four buttons:
+- **Pan Left:** topic `pantilt/pan`, payload `left`
+- **Pan Right:** topic `pantilt/pan`, payload `right`
+- **Tilt Up:** topic `pantilt/tilt`, payload `up`
+- **Tilt Down:** topic `pantilt/tilt`, payload `down`
+
+**Step 4: Arrange the Layout**
+
+1. While still in edit mode, drag cards to arrange them
+2. Optional: Use a **Grid Card** or **Vertical Stack** to organize:
+   - Camera on top
+   - Four directional buttons below in a grid pattern
+3. Click **Done** to save the dashboard
+
+You can now view the camera stream and control the pan/tilt servos from your Home Assistant dashboard! 🎯
 ---
 
 ## � Hardware Wiring

@@ -253,6 +253,38 @@ View detailed logs:
 sudo journalctl -u rtsp -n 50
 ```
 
+### Camera image is upside down or flipped
+
+Edit the MediaMTX configuration to flip the image:
+
+```bash
+sudo nano /etc/mediamtx/mediamtx.yml
+```
+
+Add flip settings under the `cam` path:
+
+```yaml
+paths:
+  cam:
+    source: rpiCamera
+    rpiCameraCamID: 0
+    rpiCameraWidth: 1280
+    rpiCameraHeight: 720
+    rpiCameraFPS: 30
+    rpiCameraHFlip: yes
+    rpiCameraVFlip: yes
+```
+
+Set both to `yes` for 180° rotation (upside down fix), or use them individually:
+- `rpiCameraHFlip: yes` - Mirror image horizontally
+- `rpiCameraVFlip: yes` - Flip image vertically
+
+Then restart the service:
+
+```bash
+sudo systemctl restart rtsp
+```
+
 ### Camera not detected
 
 Check if camera is recognized:
@@ -300,6 +332,79 @@ If servos don't move:
 2. Check servo power connections (red to 5V, brown/black to GND)
 3. Test MQTT broker is running: `sudo systemctl status mosquitto`
 4. Check pantilt service logs: `sudo journalctl -u pantilt -n 20`
+
+### "Can't connect to pigpio at localhost(9000)" error
+
+If pantilt service logs show this error, the pigpiod service file has the wrong port configured.
+
+Check the current port:
+
+```bash
+cat /etc/systemd/system/pigpiod.service | grep ExecStart
+```
+
+Should show: `ExecStart=/usr/local/bin/pigpiod -p 9000`
+
+If it shows port 8889 or anything else, fix it:
+
+```bash
+sudo nano /etc/systemd/system/pigpiod.service
+```
+
+Change the ExecStart line to:
+```
+ExecStart=/usr/local/bin/pigpiod -p 9000
+```
+
+Then reload and restart services:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart pigpiod
+sudo systemctl restart pantilt
+```
+
+Verify it's working:
+
+```bash
+sudo systemctl status pigpiod
+sudo systemctl status pantilt
+```
+
+### MediaMTX "bind: address already in use" on port 8889
+
+If rtsp service fails with `ERR: listen tcp :8889: bind: address already in use`, this is a WebRTC port conflict with pigpiod's socket interface.
+
+Check what's using port 8889:
+
+```bash
+sudo netstat -tulpn | grep 8889
+```
+
+If it shows pigpiod, disable WebRTC in MediaMTX (you only need RTSP anyway):
+
+```bash
+sudo nano /etc/mediamtx/mediamtx.yml
+```
+
+Add `webrtc: no` at the top before `paths:`:
+
+```yaml
+# Disable WebRTC to avoid port conflict with pigpiod on 8889
+webrtc: no
+
+paths:
+  cam:
+    source: rpiCamera
+    # ... rest of config
+```
+
+Then restart:
+
+```bash
+sudo systemctl restart rtsp
+sudo systemctl status rtsp
+```
 
 ### Servos jitter or don't move smoothly
 

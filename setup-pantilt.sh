@@ -55,6 +55,9 @@ fi
 echo "=== Creating mediamtx configuration ==="
 sudo mkdir -p /etc/mediamtx
 sudo tee /etc/mediamtx/mediamtx.yml > /dev/null <<EOF
+# Disable WebRTC to avoid port conflict with pigpiod on 8889
+webrtc: no
+
 paths:
   cam:
     source: rpiCamera
@@ -62,6 +65,8 @@ paths:
     rpiCameraWidth: 1280
     rpiCameraHeight: 720
     rpiCameraFPS: 30
+    rpiCameraHFlip: yes
+    rpiCameraVFlip: yes
 EOF
 
 echo "=== Creating target directories ==="

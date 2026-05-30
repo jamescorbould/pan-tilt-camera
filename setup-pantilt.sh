@@ -12,7 +12,7 @@ sudo raspi-config nonint do_camera 0
 sudo raspi-config nonint do_ssh 0
 
 echo "=== Installing base dependencies ==="
-sudo apt install -y python3-pip python3-dev python3-setuptools mosquitto-clients cmake git build-essential
+sudo apt install -y python3-pip python3-dev python3-setuptools mosquitto mosquitto-clients cmake git build-essential
 
 echo "=== Installing pigpio from source ==="
 if [ ! -d "/tmp/pigpio" ]; then
@@ -92,6 +92,16 @@ fi
 
 echo "=== Installing Python dependencies ==="
 sudo pip3 install -r /opt/pantilt/requirements.txt --break-system-packages
+
+echo "=== Configuring Mosquitto MQTT broker ==="
+sudo tee /etc/mosquitto/mosquitto.conf > /dev/null <<EOF
+listener 1883
+allow_anonymous true
+EOF
+
+echo "=== Restarting Mosquitto ==="
+sudo systemctl restart mosquitto
+sudo systemctl enable mosquitto
 
 # pigpiod.service
 if [ -f "./systemd/pigpiod.service" ]; then

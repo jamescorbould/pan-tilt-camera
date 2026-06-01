@@ -1,10 +1,13 @@
 [Unit]
 Description=Pan Tilt MQTT Controller
-After=network.target pigpiod.service mosquitto.service
+After=network-online.target pigpiod.service mosquitto.service
+Wants=network-online.target
+Requires=pigpiod.service
 
 [Service]
 ExecStart=/usr/bin/python3 /opt/pantilt/pantilt.py
-Restart=always
+Restart=on-failure
+RestartSec=10
 User=root
 
 [Install]
